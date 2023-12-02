@@ -3,6 +3,7 @@ import json
 from flask import make_response
 from datetime import datetime, timedelta
 import jwt
+import hashlib
 
 class user_model():
     def __init__(self):
@@ -86,6 +87,13 @@ class user_model():
             #Retorna uma mensagem em forma de json
             return make_response({"messege":"Nenhum dado foi Encontrado!"}, 204)
         
+    def user_upload_avatar_model(self, uid, filepath):
+        self.cur.execute(f"UPDATE users SET avatar='{filepath}' WHERE id={uid}")
+        if self.cur.rowcount > 0:
+            return make_response({"messege":"Ficheiro carregado com Sucesso!"}, 201)
+        else:
+            return make_response({"messege":"Nenhum Ficheiro foi Carregado!"}, 202)
+    
     
     def user_login_model(self, data):
         self.cur.execute(f"SELECT id, name, email, phone, role_id FROM users WHERE email='{data['email']}' and password='{data['password']}'")
